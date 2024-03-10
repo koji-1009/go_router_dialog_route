@@ -4,14 +4,16 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({
     super.key,
     required this.onNavigateToPage,
-    required this.onNavigateToDialog,
-    required this.onNavigateToPagingDialog,
+    required this.onNavigateToMaterialDialog,
+    required this.onNavigateToCupertinoDialog,
+    required this.onNavigateToNoTransitionDialog,
     required this.onNavigateToSheet,
   });
 
   final VoidCallback onNavigateToPage;
-  final VoidCallback onNavigateToDialog;
-  final VoidCallback onNavigateToPagingDialog;
+  final VoidCallback onNavigateToMaterialDialog;
+  final VoidCallback onNavigateToCupertinoDialog;
+  final VoidCallback onNavigateToNoTransitionDialog;
   final VoidCallback onNavigateToSheet;
 
   @override
@@ -30,15 +32,22 @@ class HomeScreen extends StatelessWidget {
               height: 16,
             ),
             FilledButton(
-              onPressed: onNavigateToDialog,
-              child: const Text('Show Dialog'),
+              onPressed: onNavigateToMaterialDialog,
+              child: const Text('Show Material Dialog'),
             ),
             const SizedBox(
               height: 16,
             ),
-            FilledButton.tonal(
-              onPressed: onNavigateToPagingDialog,
-              child: const Text('Paging Dialog'),
+            FilledButton(
+              onPressed: onNavigateToCupertinoDialog,
+              child: const Text('Show Cupertino Dialog'),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            FilledButton(
+              onPressed: onNavigateToNoTransitionDialog,
+              child: const Text('No Transition Dialog'),
             ),
             const SizedBox(
               height: 16,

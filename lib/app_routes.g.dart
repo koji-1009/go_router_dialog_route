@@ -19,12 +19,16 @@ RouteBase get $homeRoute => GoRouteData.$route(
           factory: $PageScreenRouteExtension._fromState,
         ),
         GoRouteData.$route(
-          path: 'dialog',
-          factory: $ShowDialogRouteExtension._fromState,
+          path: 'material-dialog',
+          factory: $ShowMaterialDialogRouteExtension._fromState,
         ),
         GoRouteData.$route(
-          path: 'dialog-paging',
-          factory: $ShowDialogPagingRouteExtension._fromState,
+          path: 'cupertino-dialog',
+          factory: $ShowCupertinoDialogRouteExtension._fromState,
+        ),
+        GoRouteData.$route(
+          path: 'no-transition-dialog',
+          factory: $ShowNoTransitionDialogRouteExtension._fromState,
         ),
         GoRouteData.$route(
           path: 'sheet',
@@ -68,12 +72,12 @@ extension $PageScreenRouteExtension on PageScreenRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $ShowDialogRouteExtension on ShowDialogRoute {
-  static ShowDialogRoute _fromState(GoRouterState state) =>
-      const ShowDialogRoute();
+extension $ShowMaterialDialogRouteExtension on ShowMaterialDialogRoute {
+  static ShowMaterialDialogRoute _fromState(GoRouterState state) =>
+      const ShowMaterialDialogRoute();
 
   String get location => GoRouteData.$location(
-        '/dialog',
+        '/material-dialog',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -86,18 +90,36 @@ extension $ShowDialogRouteExtension on ShowDialogRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $ShowDialogPagingRouteExtension on ShowDialogPagingRoute {
-  static ShowDialogPagingRoute _fromState(GoRouterState state) =>
-      ShowDialogPagingRoute(
+extension $ShowCupertinoDialogRouteExtension on ShowCupertinoDialogRoute {
+  static ShowCupertinoDialogRoute _fromState(GoRouterState state) =>
+      const ShowCupertinoDialogRoute();
+
+  String get location => GoRouteData.$location(
+        '/cupertino-dialog',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ShowNoTransitionDialogRouteExtension on ShowNoTransitionDialogRoute {
+  static ShowNoTransitionDialogRoute _fromState(GoRouterState state) =>
+      ShowNoTransitionDialogRoute(
         number:
             _$convertMapValue('number', state.uri.queryParameters, int.parse) ??
-                0,
+                1,
       );
 
   String get location => GoRouteData.$location(
-        '/dialog-paging',
+        '/no-transition-dialog',
         queryParams: {
-          if (number != 0) 'number': number.toString(),
+          if (number != 1) 'number': number.toString(),
         },
       );
 
@@ -142,7 +164,7 @@ T? _$convertMapValue<T>(
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appRouterHash() => r'081748e09aa31cb410637e79e7f83ada1ef5fb56';
+String _$appRouterHash() => r'9d932378aeb6ffc8c01b2daf09b748f278c8a8ed';
 
 /// See also [appRouter].
 @ProviderFor(appRouter)

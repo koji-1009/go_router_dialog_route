@@ -1,13 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class DialogPage<T> extends Page<T> {
-  const DialogPage({
+class MaterialDialogPage<T> extends Page<T> {
+  const MaterialDialogPage({
     super.key,
     super.name,
     super.arguments,
     super.restorationId,
-    required this.builder,
+    required this.child,
     this.barrierColor = Colors.black54,
     this.barrierDismissible = true,
     this.barrierLabel,
@@ -16,7 +17,7 @@ class DialogPage<T> extends Page<T> {
     this.traversalEdgeBehavior,
   });
 
-  final WidgetBuilder builder;
+  final Widget child;
   final Color? barrierColor;
   final bool barrierDismissible;
   final String? barrierLabel;
@@ -28,7 +29,7 @@ class DialogPage<T> extends Page<T> {
   Route<T> createRoute(BuildContext context) {
     return DialogRoute<T>(
       context: context,
-      builder: builder,
+      builder: (context) => child,
       barrierColor: barrierColor,
       barrierDismissible: barrierDismissible,
       barrierLabel: barrierLabel,
@@ -41,14 +42,84 @@ class DialogPage<T> extends Page<T> {
   }
 }
 
-class ExampleDialog extends StatelessWidget {
-  const ExampleDialog({super.key});
+class CupertinoDialogPage<T> extends Page<T> {
+  const CupertinoDialogPage({
+    super.key,
+    super.name,
+    super.arguments,
+    super.restorationId,
+    required this.child,
+    this.barrierDismissible = false,
+    this.barrierColor,
+    this.barrierLabel,
+    this.anchorPoint,
+  });
+
+  final Widget child;
+  final bool barrierDismissible;
+  final Color? barrierColor;
+  final String? barrierLabel;
+  final Offset? anchorPoint;
+
+  @override
+  Route<T> createRoute(BuildContext context) {
+    return CupertinoDialogRoute<T>(
+      context: context,
+      builder: (context) => child,
+      barrierDismissible: barrierDismissible,
+      barrierColor: barrierColor,
+      barrierLabel: barrierLabel,
+      settings: this,
+      anchorPoint: anchorPoint,
+    );
+  }
+}
+
+class NoTransitionDialogPage<T> extends Page<T> {
+  const NoTransitionDialogPage({
+    super.key,
+    super.name,
+    super.arguments,
+    super.restorationId,
+    required this.child,
+    this.barrierColor = const Color(0x80000000),
+    this.barrierDismissible = true,
+    this.barrierLabel,
+    this.anchorPoint,
+    this.traversalEdgeBehavior,
+  });
+
+  final Widget child;
+  final Color? barrierColor;
+  final bool barrierDismissible;
+  final String? barrierLabel;
+  final Offset? anchorPoint;
+  final TraversalEdgeBehavior? traversalEdgeBehavior;
+
+  @override
+  Route<T> createRoute(BuildContext context) {
+    return RawDialogRoute<T>(
+      pageBuilder: (context, animation, secondaryAnimation) => child,
+      barrierDismissible: barrierDismissible,
+      barrierColor: barrierColor,
+      barrierLabel: barrierLabel,
+      transitionDuration: Duration.zero,
+      transitionBuilder: null,
+      settings: this,
+      anchorPoint: anchorPoint,
+      traversalEdgeBehavior: traversalEdgeBehavior,
+    );
+  }
+}
+
+class MaterialDialog extends StatelessWidget {
+  const MaterialDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Simple Dialog'),
-      content: const Text('This is a simple dialog'),
+      title: const Text('Material Dialog'),
+      content: const Text('This is a material dialog'),
       actions: [
         TextButton(
           onPressed: () {
@@ -61,8 +132,28 @@ class ExampleDialog extends StatelessWidget {
   }
 }
 
-class ExampleSectionDialog extends StatelessWidget {
-  const ExampleSectionDialog({
+class CupertinoDialog extends StatelessWidget {
+  const CupertinoDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+      title: const Text('Cupertino Dialog'),
+      content: const Text('This is a cupertino dialog'),
+      actions: [
+        CupertinoDialogAction(
+          onPressed: () {
+            context.pop();
+          },
+          child: const Text('OK'),
+        ),
+      ],
+    );
+  }
+}
+
+class NoTransitionDialog extends StatelessWidget {
+  const NoTransitionDialog({
     super.key,
     required this.number,
     required this.onNextPage,
@@ -75,16 +166,16 @@ class ExampleSectionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: Text('Paging Dialog: Page $number'),
-      children: [
-        SimpleDialogOption(
+    return AlertDialog(
+      title: Text('No transition dialog: $number'),
+      actions: [
+        TextButton(
           onPressed: onPreviousPage,
-          child: const Text('Previous Page'),
+          child: const Text('Previous'),
         ),
-        SimpleDialogOption(
+        TextButton(
           onPressed: onNextPage,
-          child: const Text('Next Page'),
+          child: const Text('Next'),
         ),
       ],
     );

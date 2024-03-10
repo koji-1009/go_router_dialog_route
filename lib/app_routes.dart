@@ -12,6 +12,7 @@ GoRouter appRouter(
   AppRouterRef ref,
 ) =>
     GoRouter(
+      debugLogDiagnostics: true,
       initialLocation: '/',
       routes: $appRoutes,
     );
@@ -22,11 +23,14 @@ GoRouter appRouter(
     TypedGoRoute<PageScreenRoute>(
       path: 'page',
     ),
-    TypedGoRoute<ShowDialogRoute>(
-      path: 'dialog',
+    TypedGoRoute<ShowMaterialDialogRoute>(
+      path: 'material-dialog',
     ),
-    TypedGoRoute<ShowDialogPagingRoute>(
-      path: 'dialog-paging',
+    TypedGoRoute<ShowCupertinoDialogRoute>(
+      path: 'cupertino-dialog',
+    ),
+    TypedGoRoute<ShowNoTransitionDialogRoute>(
+      path: 'no-transition-dialog',
     ),
     TypedGoRoute<ShowSheetRoute>(
       path: 'sheet',
@@ -41,11 +45,14 @@ class HomeRoute extends GoRouteData {
         onNavigateToPage: () {
           const PageScreenRoute().go(context);
         },
-        onNavigateToDialog: () {
-          const ShowDialogRoute().go(context);
+        onNavigateToMaterialDialog: () {
+          const ShowMaterialDialogRoute().go(context);
         },
-        onNavigateToPagingDialog: () {
-          const ShowDialogPagingRoute().go(context);
+        onNavigateToCupertinoDialog: () {
+          const ShowCupertinoDialogRoute().go(context);
+        },
+        onNavigateToNoTransitionDialog: () {
+          const ShowNoTransitionDialogRoute().go(context);
         },
         onNavigateToSheet: () {
           const ShowSheetRoute().go(context);
@@ -64,42 +71,54 @@ class PageScreenRoute extends GoRouteData {
   }
 }
 
-class ShowDialogRoute extends GoRouteData {
-  const ShowDialogRoute();
+class ShowMaterialDialogRoute extends GoRouteData {
+  const ShowMaterialDialogRoute();
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return DialogPage<void>(
-      builder: (context) => const ExampleDialog(),
+    return const MaterialDialogPage<void>(
+      child: MaterialDialog(),
     );
   }
 }
 
-class ShowDialogPagingRoute extends GoRouteData {
-  const ShowDialogPagingRoute({
-    this.number = 0,
+class ShowCupertinoDialogRoute extends GoRouteData {
+  const ShowCupertinoDialogRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return const CupertinoDialogPage<void>(
+      child: CupertinoDialog(),
+    );
+  }
+}
+
+class ShowNoTransitionDialogRoute extends GoRouteData {
+  const ShowNoTransitionDialogRoute({
+    this.number = 1,
   });
 
   final int number;
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return DialogPage<void>(
+    return NoTransitionDialogPage<void>(
       key: ValueKey(number),
-      builder: (context) => ExampleSectionDialog(
+      barrierColor: Colors.black54,
+      child: NoTransitionDialog(
         number: number,
         onNextPage: () {
-          ShowDialogPagingRoute(
+          ShowNoTransitionDialogRoute(
             number: number + 1,
           ).go(context);
         },
         onPreviousPage: () {
-          if (number == 0) {
+          if (number <= 1) {
             context.pop();
             return;
           }
 
-          ShowDialogPagingRoute(
+          ShowNoTransitionDialogRoute(
             number: number - 1,
           ).go(context);
         },
