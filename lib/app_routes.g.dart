@@ -31,8 +31,16 @@ RouteBase get $homeRoute => GoRouteData.$route(
           factory: $ShowNoTransitionDialogRouteExtension._fromState,
         ),
         GoRouteData.$route(
-          path: 'sheet',
-          factory: $ShowSheetRouteExtension._fromState,
+          path: 'material-bottom-sheet',
+          factory: $ShowMaterialBottomSheetExtension._fromState,
+        ),
+        GoRouteData.$route(
+          path: 'cupertino-modal-popup',
+          factory: $ShowCupertinoModalPopupRouteExtension._fromState,
+        ),
+        GoRouteData.$route(
+          path: 'modal-scaffold',
+          factory: $ShowModalScaffoldRouteExtension._fromState,
         ),
       ],
     );
@@ -133,12 +141,56 @@ extension $ShowNoTransitionDialogRouteExtension on ShowNoTransitionDialogRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $ShowSheetRouteExtension on ShowSheetRoute {
-  static ShowSheetRoute _fromState(GoRouterState state) =>
-      const ShowSheetRoute();
+extension $ShowMaterialBottomSheetExtension on ShowMaterialBottomSheet {
+  static ShowMaterialBottomSheet _fromState(GoRouterState state) =>
+      const ShowMaterialBottomSheet();
 
   String get location => GoRouteData.$location(
-        '/sheet',
+        '/material-bottom-sheet',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ShowCupertinoModalPopupRouteExtension
+    on ShowCupertinoModalPopupRoute {
+  static ShowCupertinoModalPopupRoute _fromState(GoRouterState state) =>
+      const ShowCupertinoModalPopupRoute();
+
+  String get location => GoRouteData.$location(
+        '/cupertino-modal-popup',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $ShowModalScaffoldRouteExtension on ShowModalScaffoldRoute {
+  static ShowModalScaffoldRoute _fromState(GoRouterState state) =>
+      ShowModalScaffoldRoute(
+        number:
+            _$convertMapValue('number', state.uri.queryParameters, int.parse) ??
+                1,
+      );
+
+  String get location => GoRouteData.$location(
+        '/modal-scaffold',
+        queryParams: {
+          if (number != 1) 'number': number.toString(),
+        },
       );
 
   void go(BuildContext context) => context.go(location);

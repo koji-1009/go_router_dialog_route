@@ -1,15 +1,18 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 const _defaultScrollControlDisabledMaxHeightRatio = 9.0 / 16.0;
 
-class SheetPage<T> extends Page<T> {
-  const SheetPage({
+class MaterialBottomSheetPage<T> extends Page<T> {
+  const MaterialBottomSheetPage({
     super.key,
     super.name,
     super.arguments,
     super.restorationId,
-    required this.builder,
-    this.capturedThemes,
+    required this.child,
     this.barrierLabel,
     this.barrierOnTapHint,
     this.backgroundColor,
@@ -29,8 +32,7 @@ class SheetPage<T> extends Page<T> {
     this.useSafeArea = false,
   });
 
-  final WidgetBuilder builder;
-  final CapturedThemes? capturedThemes;
+  final Widget child;
   final String? barrierLabel;
   final String? barrierOnTapHint;
   final Color? backgroundColor;
@@ -50,11 +52,13 @@ class SheetPage<T> extends Page<T> {
 
   @override
   Route<T> createRoute(BuildContext context) {
+    final localizations = MaterialLocalizations.of(context);
+
     return ModalBottomSheetRoute<T>(
-      builder: builder,
-      capturedThemes: capturedThemes,
-      barrierLabel: barrierLabel,
-      barrierOnTapHint: barrierOnTapHint,
+      builder: (context) => child,
+      barrierLabel: barrierLabel ?? localizations.scrimLabel,
+      barrierOnTapHint:
+          localizations.scrimOnTapHint(localizations.bottomSheetLabel),
       backgroundColor: backgroundColor,
       elevation: elevation,
       shape: shape,
@@ -75,8 +79,40 @@ class SheetPage<T> extends Page<T> {
   }
 }
 
-class ExampleSheet extends StatelessWidget {
-  const ExampleSheet({super.key});
+class CupertinoBottomModalPage<T> extends Page<T> {
+  const CupertinoBottomModalPage({
+    super.key,
+    required this.child,
+    this.filter,
+    this.barrierColor = kCupertinoModalBarrierColor,
+    this.barrierDismissible = true,
+    this.semanticsDismissible = false,
+    this.anchorPoint,
+  });
+
+  final Widget child;
+  final ImageFilter? filter;
+  final Color barrierColor;
+  final bool barrierDismissible;
+  final bool semanticsDismissible;
+  final Offset? anchorPoint;
+
+  @override
+  Route<T> createRoute(BuildContext context) {
+    return CupertinoModalPopupRoute<T>(
+      builder: (context) => child,
+      barrierColor: barrierColor,
+      barrierDismissible: barrierDismissible,
+      semanticsDismissible: semanticsDismissible,
+      filter: filter,
+      settings: this,
+      anchorPoint: anchorPoint,
+    );
+  }
+}
+
+class MaterialBottomSheet extends StatelessWidget {
+  const MaterialBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -93,10 +129,70 @@ class ExampleSheet extends StatelessWidget {
               const Spacer(),
               ElevatedButton(
                 child: const Text('Close BottomSheet'),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  context.pop();
+                },
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class CupertinoModalPopUpSheet extends StatelessWidget {
+  const CupertinoModalPopUpSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoActionSheet(
+      title: const Text('Cupertino Modal Popup'),
+      message: const Text('This is a Cupertino Modal Popup'),
+      actions: [
+        CupertinoActionSheetAction(
+          onPressed: () {
+            context.pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+}
+
+class ModalScaffold extends StatelessWidget {
+  const ModalScaffold({
+    super.key,
+    required this.number,
+    required this.onNextPage,
+    required this.onPreviousPage,
+  });
+
+  final int number;
+  final void Function() onNextPage;
+  final void Function() onPreviousPage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Modal Scaffold'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('This is a modal scaffold'),
+            TextButton(
+              onPressed: onPreviousPage,
+              child: const Text('Previous'),
+            ),
+            TextButton(
+              onPressed: onNextPage,
+              child: const Text('Next'),
+            ),
+          ],
         ),
       ),
     );

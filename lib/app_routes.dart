@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_router_dialog_route/dialog.dart';
@@ -32,8 +33,14 @@ GoRouter appRouter(
     TypedGoRoute<ShowNoTransitionDialogRoute>(
       path: 'no-transition-dialog',
     ),
-    TypedGoRoute<ShowSheetRoute>(
-      path: 'sheet',
+    TypedGoRoute<ShowMaterialBottomSheet>(
+      path: 'material-bottom-sheet',
+    ),
+    TypedGoRoute<ShowCupertinoModalPopupRoute>(
+      path: 'cupertino-modal-popup',
+    ),
+    TypedGoRoute<ShowModalScaffoldRoute>(
+      path: 'modal-scaffold',
     ),
   ],
 )
@@ -41,7 +48,8 @@ class HomeRoute extends GoRouteData {
   const HomeRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => HomeScreen(
+  Widget build(BuildContext context, GoRouterState state) {
+    return HomeScreen(
         onNavigateToPage: () {
           const PageScreenRoute().go(context);
         },
@@ -54,10 +62,17 @@ class HomeRoute extends GoRouteData {
         onNavigateToNoTransitionDialog: () {
           const ShowNoTransitionDialogRoute().go(context);
         },
-        onNavigateToSheet: () {
-          const ShowSheetRoute().go(context);
+        onNavigateMaterialBottomSheet: () {
+          const ShowMaterialBottomSheet().go(context);
         },
+        onNavigateCupertinoModalPopup: () {
+          const ShowCupertinoModalPopupRoute().go(context);
+        },
+        onNavigateModalScaffold: () {
+          const ShowModalScaffoldRoute().go(context);
+        }
       );
+  }
 }
 
 class PageScreenRoute extends GoRouteData {
@@ -127,14 +142,59 @@ class ShowNoTransitionDialogRoute extends GoRouteData {
   }
 }
 
-class ShowSheetRoute extends GoRouteData {
-  const ShowSheetRoute();
+class ShowMaterialBottomSheet extends GoRouteData {
+  const ShowMaterialBottomSheet();
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return SheetPage(
-      builder: (context) => const ExampleSheet(),
+    return const MaterialBottomSheetPage(
+      child: MaterialBottomSheet(),
       isScrollControlled: true,
+    );
+  }
+}
+
+class ShowCupertinoModalPopupRoute extends GoRouteData {
+  const ShowCupertinoModalPopupRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return const CupertinoBottomModalPage<void>(
+      child: CupertinoModalPopUpSheet(),
+    );
+  }
+}
+
+class ShowModalScaffoldRoute extends GoRouteData {
+  const ShowModalScaffoldRoute({
+    this.number = 1,
+  });
+
+  final int number;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return MaterialBottomSheetPage<void>(
+      key: ValueKey(number),
+      isScrollControlled: false,
+      child: ModalScaffold(
+        number: number,
+        onNextPage: () {
+          ShowModalScaffoldRoute(
+            number: number + 1,
+          ).go(context);
+        },
+        onPreviousPage: () {
+          if (number <= 1) {
+            context.pop();
+            return;
+          }
+
+          ShowModalScaffoldRoute(
+            number: number - 1,
+          ).go(context);
+        },
+      ),
     );
   }
 }

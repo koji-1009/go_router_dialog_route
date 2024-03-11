@@ -7,14 +7,18 @@ class HomeScreen extends StatelessWidget {
     required this.onNavigateToMaterialDialog,
     required this.onNavigateToCupertinoDialog,
     required this.onNavigateToNoTransitionDialog,
-    required this.onNavigateToSheet,
+    required this.onNavigateMaterialBottomSheet,
+    required this.onNavigateCupertinoModalPopup,
+    required this.onNavigateModalScaffold,
   });
 
   final VoidCallback onNavigateToPage;
   final VoidCallback onNavigateToMaterialDialog;
   final VoidCallback onNavigateToCupertinoDialog;
   final VoidCallback onNavigateToNoTransitionDialog;
-  final VoidCallback onNavigateToSheet;
+  final VoidCallback onNavigateMaterialBottomSheet;
+  final VoidCallback onNavigateCupertinoModalPopup;
+  final VoidCallback onNavigateModalScaffold;
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +57,22 @@ class HomeScreen extends StatelessWidget {
               height: 16,
             ),
             FilledButton(
-              onPressed: onNavigateToSheet,
-              child: const Text('Show Sheet'),
+              onPressed: onNavigateMaterialBottomSheet,
+              child: const Text('Show Material Bottom Sheet'),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            FilledButton(
+              onPressed: onNavigateCupertinoModalPopup,
+              child: const Text('Show Cupertino Modal Popup'),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            FilledButton(
+              onPressed: onNavigateModalScaffold,
+              child: const Text('Show Modal Scaffold'),
             ),
           ],
         ),
